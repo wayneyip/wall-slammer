@@ -19,9 +19,9 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - 
-  - 
-  - 
+  - Wall
+  - Player
+  - Enemy
   - 
   - 
   - 
