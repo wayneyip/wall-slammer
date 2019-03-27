@@ -4,39 +4,55 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    float timer;
     Rigidbody rb;
     float force = 2000.0f;
 
     // Start is called before the first frame update
     void Start()
     {
-        timer = 0.0f;
         rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true; 
     }
 
     // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
-        rb.AddForce(Vector3.back * (50f)); 
+        RaycastHit hit; 
+           if (Input.GetKey(KeyCode.A)) {
+            if(Physics.Raycast(transform.position, Vector3.left, out hit))
+            {
+                Vector3 translation = new Vector3(hit.transform.position.x + 1, transform.position.y, transform.position.z);
 
-        if(timer >= 0.5f)
-        {
-            timer = 0.0f;
-
-            if (Input.GetKey(KeyCode.A)) {
-                rb.AddForce(Vector3.left * force);
+                transform.position = translation;
             }
+            }
+
             else if (Input.GetKey(KeyCode.D)) {
-                rb.AddForce(Vector3.right * force);
-            }
-            else if (Input.GetKey(KeyCode.W)) {
-                rb.AddForce(Vector3.forward * force);
-            }
-            else if (Input.GetKey(KeyCode.S)) {
-                rb.AddForce(Vector3.back * force);
+            if (Physics.Raycast(transform.position, Vector3.right, out hit))
+            {
+                Vector3 translation = new Vector3(hit.transform.position.x - 1, transform.position.y, transform.position.z);
+
+                transform.position = translation;
             }
         }
+
+            else if (Input.GetKey(KeyCode.W)) {
+            if (Physics.Raycast(transform.position, Vector3.forward, out hit))
+            {
+                Vector3 translation = new Vector3(transform.position.x, transform.position.y, hit.transform.position.z - 1);
+
+                transform.position = translation;
+            }
+        }
+
+            else if (Input.GetKey(KeyCode.S)) {
+            if (Physics.Raycast(transform.position, Vector3.back, out hit))
+            {
+                Vector3 translation = new Vector3(transform.position.x, transform.position.y, hit.transform.position.z + 1);
+
+                transform.position = translation;
+            }
+        }
+          
     }
 }
