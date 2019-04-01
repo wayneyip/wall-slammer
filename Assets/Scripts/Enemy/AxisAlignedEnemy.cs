@@ -8,6 +8,7 @@ public class AxisAlignedEnemy : EnemyBase
     public enum Direction { X, Z };
     public Direction direction;
 
+
     private void LateUpdate()
     {
         if(size > 1)
@@ -17,9 +18,9 @@ public class AxisAlignedEnemy : EnemyBase
             Vector3 normalDir = direction == Direction.X ? new Vector3(0, 0, 1) : new Vector3(1, 0, 0);
 
 
-            for (int i = 0; i < size * sensorSampleRate; ++i)
+            for (int i = 0; i < size; ++i)
             {
-                Vector3 rayOrigin = transform.position + ((size - 1) / 2.0f - i * 1.0f / sensorSampleRate + 0.25f) * normalDir;
+                Vector3 rayOrigin = transform.position + ((size - 1) / 2.0f - i) * normalDir;
 
                 Debug.DrawLine(rayOrigin, rayOrigin + 5.0f * dir, Color.green);
 
@@ -69,9 +70,9 @@ public class AxisAlignedEnemy : EnemyBase
         float minPositive = float.PositiveInfinity;
         float minNegative = float.PositiveInfinity;
 
-        for (int i = 0; i < size * sensorSampleRate; ++i)
+        for(int i = 0; i < size; ++i)
         {
-            Vector3 rayOrigin = transform.position + ((size - 1) / 2.0f - i * 1.0f / sensorSampleRate + 0.25f) * normalDir;
+            Vector3 rayOrigin = transform.position + ((size - 1) / 2.0f - i) * normalDir;
 
             Ray posRay = new Ray(rayOrigin, dir);
             Ray negRay = new Ray(rayOrigin, -dir);

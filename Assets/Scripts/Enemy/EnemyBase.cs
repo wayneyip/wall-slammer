@@ -22,7 +22,7 @@ public abstract class EnemyBase : MonoBehaviour
     protected Vector3 positionBeforeMovement;
     protected float targetVectorLength;
 
-    public static int sensorSampleRate = 2;
+    public static int sensorSampleRate = 4;
 
 
     private void Awake()
