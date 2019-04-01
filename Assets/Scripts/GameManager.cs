@@ -21,6 +21,11 @@ public class GameManager : MonoBehaviour
     public LayerMask wallLayer;
     public LayerMask enemyLayer;
 
+    //Map Data
+    public float unitLength = 1.0f;
+
+
+
     private void Awake()
     {
         if(instance != null)
@@ -44,7 +49,16 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            ResetGame();
+        }
+    }
+
+
+    public void ResetGame()
+    {
+        OnGameStart.Invoke();
     }
 
     private void StartGame()

@@ -4,6 +4,13 @@ using UnityEngine;
 
 public abstract class EnemyBase : MonoBehaviour
 {
+    [Range(1, 2)]
+    public int initialSize;
+    protected int size;
+
+    private Vector3 initialPosition;
+    private Quaternion initialRotation;
+    private bool bActive;
 
     public float moveInterval;
     public float moveSpeed;
@@ -15,8 +22,16 @@ public abstract class EnemyBase : MonoBehaviour
     protected Vector3 positionBeforeMovement;
     protected float targetVectorLength;
 
+    public static int sensorSampleRate = 2;
+
+
     private void Awake()
     {
+        initialPosition = transform.position;
+        initialRotation = transform.rotation;
+
+        initialSize = (int)transform.lossyScale.x;
+
         GameManager.instance.OnGameOver.AddListener(_OnGameOver);
         GameManager.instance.OnGameStart.AddListener(_OnGameStart);
     }
@@ -28,6 +43,9 @@ public abstract class EnemyBase : MonoBehaviour
 
     private void Update()
     {
+        if (!bActive)
+            return;
+
         bool canMove = false;
         if(moveTimer > 0)
         {
@@ -85,10 +103,19 @@ public abstract class EnemyBase : MonoBehaviour
     private void _OnGameStart()
     {
         moveTimer = moveInterval;
+        transform.position = initialPosition;
+        transform.rotation = initialRotation;
+        bActive = true;
+        size = initialSize;
     }
 
     private void _OnGameOver()
     {
-        Destroy(this);
+        bActive = false;
+    }
+
+    private void UpdateSizeVisual()
+    {
+        Utilities.SetGlobalScale(transform, Vector3.one * GameManager.instance.unitLength * size);
     }
 }
