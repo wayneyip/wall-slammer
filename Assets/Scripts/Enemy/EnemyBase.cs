@@ -58,7 +58,7 @@ public abstract class EnemyBase : MonoBehaviour
 
     private void OnMoveStarted()
     {
-        Debug.Log("Move Started. Target Position: " + movementTargetPosition);
+        //Debug.Log("Move Started. Target Position: " + movementTargetPosition);
         isMoving = true;
         positionBeforeMovement = transform.position;
         targetVectorLength = (movementTargetPosition - transform.position).magnitude;
@@ -66,7 +66,7 @@ public abstract class EnemyBase : MonoBehaviour
 
     private void OnMoveFinished()
     {
-        Debug.Log("Move Finished");
+        //Debug.Log("Move Finished");
         moveTimer = moveInterval;
         isMoving = false;
     }

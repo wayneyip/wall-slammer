@@ -22,7 +22,7 @@ public class AxisAlignedEnemy : EnemyBase
             {
                 if (Physics.Raycast(rayNeg, out RaycastHit hitNeg, float.PositiveInfinity, GameManager.instance.wallLayer.value))
                 {
-                    Debug.Log(hitPos.point + " " + hitNeg.point);
+                    //Debug.Log(hitPos.point + " " + hitNeg.point);
                     movementTargetPosition = hitNeg.point + dir / 2.0f;
                     movementDirection = -dir;
                 }
