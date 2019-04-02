@@ -57,162 +57,47 @@ public class Player : MonoBehaviour
 
         if (!isSliding)
         {
-            RaycastHit hit;
+            RaycastHit hit = new RaycastHit();
+            Vector3 slideDir = new Vector3(0, 0, 0);
+
             if (Input.GetKeyDown(KeyCode.A))
             {
-                if (Physics.Raycast(transform.position, -transform.right, out hit))
-                {
-                    Vector3 translationPos = hit.point + hit.transform.forward * 0.5f;
-                    Vector3 translationNeg = hit.point - hit.transform.forward * 0.5f;
-
-                    Vector3 translation = (translationPos - transform.position).magnitude < (translationNeg - transform.position).magnitude ? translationPos : translationNeg;
-
-                    bool bSwitchOrientation = false;
-
-                    if (Mathf.Abs(Mathf.Abs(hit.transform.rotation.eulerAngles.y) - 45f) < 0.1f)
-                    {
-                        //Wall is diagonal
-                        if (!bIsDiagonal)
-                        {
-                            //Player was not diagonal
-                            bSwitchOrientation = true;
-                            bIsDiagonal = true;
-                        }
-                    }
-                    else
-                    {
-                        if (bIsDiagonal)
-                        {
-                            bSwitchOrientation = true;
-                            bIsDiagonal = false;
-                        }
-                    }
-
-                    if (Vector3.Distance(transform.position, translation) > delta)
-                    {
-                        StartCoroutine(Slide(translation, bSwitchOrientation));
-                    }
-                }
+                slideDir = -transform.right;
             }
 
             else if (Input.GetKeyDown(KeyCode.D))
             {
-                if (Physics.Raycast(transform.position, transform.right, out hit))
-                {
-                    Vector3 translationPos = hit.point + hit.transform.forward * 0.5f;
-                    Vector3 translationNeg = hit.point - hit.transform.forward * 0.5f;
-
-                    Vector3 translation = (translationPos - transform.position).magnitude < (translationNeg - transform.position).magnitude ? translationPos : translationNeg;
-
-                    bool bSwitchOrientation = false;
-
-                    if (Mathf.Abs(Mathf.Abs(hit.transform.rotation.eulerAngles.y) - 45f) < 0.1f)
-                    {
-                        //Wall is diagonal
-                        if (!bIsDiagonal)
-                        {
-                            //Player was not diagonal
-                            bSwitchOrientation = true;
-                            bIsDiagonal = true;
-                        }
-                    }
-                    else
-                    {
-                        if (bIsDiagonal)
-                        {
-                            bSwitchOrientation = true;
-                            bIsDiagonal = false;
-                        }
-                    }
-
-                    if (Vector3.Distance(transform.position, translation) > delta)
-                    {
-                        StartCoroutine(Slide(translation, bSwitchOrientation));
-                    }
-                }
+                slideDir = transform.right;
             }
 
             else if (Input.GetKeyDown(KeyCode.W))
             {
-                if (Physics.Raycast(transform.position, transform.forward, out hit))
-                {
-                    Vector3 translationPos = hit.point + hit.transform.forward * 0.5f;
-                    Vector3 translationNeg = hit.point - hit.transform.forward * 0.5f;
-
-                    Vector3 translation = (translationPos - transform.position).magnitude < (translationNeg - transform.position).magnitude ? translationPos : translationNeg;
-
-                    bool bSwitchOrientation = false;
-
-                    if (Mathf.Abs(Mathf.Abs(hit.transform.rotation.eulerAngles.y) - 45f) < 0.1f)
-                    {
-                        Debug.Log("Diagonal Wall");
-                        //Wall is diagonal
-                        if (!bIsDiagonal)
-                        {
-                            Debug.Log("Player was not diagonal");
-                            //Player was not diagonal
-                            bSwitchOrientation = true;
-                            bIsDiagonal = true;
-                        }
-                    }
-                    else
-                    {
-                        if (bIsDiagonal)
-                        {
-                            bSwitchOrientation = true;
-                            bIsDiagonal = false;
-                        }
-                    }
-
-                    if (Vector3.Distance(transform.position, translation) > delta)
-                    {
-                        StartCoroutine(Slide(translation, bSwitchOrientation));
-                    }
-                }
+                slideDir = transform.forward;
             }
 
             else if (Input.GetKeyDown(KeyCode.S))
             {
-                if (Physics.Raycast(transform.position, -transform.forward, out hit))
+                slideDir = -transform.forward;
+            }
+
+            if (slideDir.magnitude > 0 && Physics.Raycast(transform.position, slideDir, out hit))
+            {
+
+                bool bSwitchOrientation = Mathf.Abs(Vector3.Dot(hit.normal, slideDir)) > 0.9 ? false : true;
+
+                Vector3 translation = hit.point + hit.normal * 0.5f;
+                
+                if (Vector3.Distance(transform.position, translation) > delta)
                 {
-                    Vector3 translationPos = hit.point + hit.transform.forward * 0.5f;
-                    Vector3 translationNeg = hit.point - hit.transform.forward * 0.5f;
-
-                    Vector3 translation = (translationPos - transform.position).magnitude < (translationNeg - transform.position).magnitude ? translationPos : translationNeg;
-
-                    bool bSwitchOrientation = false;
-
-                    if (Mathf.Abs(Mathf.Abs(hit.transform.rotation.eulerAngles.y) - 45f) < 0.1f)
-                    {
-                        //Wall is diagonal
-                        if (!bIsDiagonal)
-                        {
-                            //Player was not diagonal
-                            bSwitchOrientation = true;
-                            bIsDiagonal = true;
-                        }
-                    }
-                    else
-                    {
-                        if (bIsDiagonal)
-                        {
-                            bSwitchOrientation = true;
-                            bIsDiagonal = false;
-                        }
-                    }
-
-                    if (Vector3.Distance(transform.position, translation) > delta)
-                    {
-                        StartCoroutine(Slide(translation, bSwitchOrientation));
-                    }
+                    StartCoroutine(Slide(translation, bSwitchOrientation));
                 }
             }
+
         }
     }
 
     IEnumerator Slide(Vector3 target, bool bSwitchOrientation)
     {
-        Debug.Log(target);
         isSliding = true;
         Quaternion initialRotation = transform.rotation;
         Quaternion targetRotation = bSwitchOrientation && transform.rotation.eulerAngles.y == 0 ? Quaternion.Euler(new Vector3(0, 45, 0)) : Quaternion.identity;
@@ -263,6 +148,16 @@ public class Player : MonoBehaviour
     private void UpdateSizeVisual()
     {
         Utilities.SetGlobalScale(transform, Vector3.one * GameManager.instance.unitLength * size);
+    }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+
+        if(collision.gameObject.layer == (int)Mathf.Log(GameManager.instance.enemyLayer.value, 2))
+        {
+            GameManager.instance.OnGameOver.Invoke();
+        }
     }
 
 }
