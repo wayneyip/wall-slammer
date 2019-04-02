@@ -30,8 +30,8 @@ public class AxisAlignedEnemy : EnemyBase
 
     protected override void ObtainNewTargetPosition()
     {
-        Vector3 dir = direction == Direction.X ? new Vector3(1, 0, 0) : new Vector3(0, 0, 1);
-        Vector3 normalDir = direction == Direction.X ? new Vector3(0, 0, 1) : new Vector3(1, 0, 0);
+        Vector3 dir = direction == Direction.X ? transform.right : transform.forward;
+        Vector3 normalDir = direction == Direction.X ? transform.forward : transform.right;
 
         //Ray rayPos = new Ray(transform.position, dir);
         //Ray rayNeg = new Ray(transform.position, -dir);

@@ -13,6 +13,9 @@ public class Player : MonoBehaviour
     private bool bActive;
 
 
+    private bool bIsDiagonal;
+
+
     Rigidbody rb;
     float speed = 100.0f;
     bool isSliding = false;
@@ -23,6 +26,9 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+
+        bIsDiagonal = transform.rotation.eulerAngles.y == 45;
+
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
@@ -52,66 +58,187 @@ public class Player : MonoBehaviour
         if (!isSliding)
         {
             RaycastHit hit;
-            if (Input.GetKey(KeyCode.A))
+            if (Input.GetKeyDown(KeyCode.A))
             {
-                if (Physics.Raycast(transform.position, Vector3.left, out hit))
+                if (Physics.Raycast(transform.position, -transform.right, out hit))
                 {
-                    Vector3 translation = new Vector3(hit.transform.position.x + 1, transform.position.y, transform.position.z);
+                    Vector3 translationPos = hit.point + hit.transform.forward * 0.5f;
+                    Vector3 translationNeg = hit.point - hit.transform.forward * 0.5f;
+
+                    Vector3 translation = (translationPos - transform.position).magnitude < (translationNeg - transform.position).magnitude ? translationPos : translationNeg;
+
+                    bool bSwitchOrientation = false;
+
+                    if (Mathf.Abs(Mathf.Abs(hit.transform.rotation.eulerAngles.y) - 45f) < 0.1f)
+                    {
+                        //Wall is diagonal
+                        if (!bIsDiagonal)
+                        {
+                            //Player was not diagonal
+                            bSwitchOrientation = true;
+                            bIsDiagonal = true;
+                        }
+                    }
+                    else
+                    {
+                        if (bIsDiagonal)
+                        {
+                            bSwitchOrientation = true;
+                            bIsDiagonal = false;
+                        }
+                    }
 
                     if (Vector3.Distance(transform.position, translation) > delta)
                     {
-                        StartCoroutine(Slide(translation));
+                        StartCoroutine(Slide(translation, bSwitchOrientation));
                     }
                 }
             }
 
-            else if (Input.GetKey(KeyCode.D))
+            else if (Input.GetKeyDown(KeyCode.D))
             {
-                if (Physics.Raycast(transform.position, Vector3.right, out hit))
+                if (Physics.Raycast(transform.position, transform.right, out hit))
                 {
-                    Vector3 translation = new Vector3(hit.transform.position.x - 1, transform.position.y, transform.position.z);
+                    Vector3 translationPos = hit.point + hit.transform.forward * 0.5f;
+                    Vector3 translationNeg = hit.point - hit.transform.forward * 0.5f;
+
+                    Vector3 translation = (translationPos - transform.position).magnitude < (translationNeg - transform.position).magnitude ? translationPos : translationNeg;
+
+                    bool bSwitchOrientation = false;
+
+                    if (Mathf.Abs(Mathf.Abs(hit.transform.rotation.eulerAngles.y) - 45f) < 0.1f)
+                    {
+                        //Wall is diagonal
+                        if (!bIsDiagonal)
+                        {
+                            //Player was not diagonal
+                            bSwitchOrientation = true;
+                            bIsDiagonal = true;
+                        }
+                    }
+                    else
+                    {
+                        if (bIsDiagonal)
+                        {
+                            bSwitchOrientation = true;
+                            bIsDiagonal = false;
+                        }
+                    }
 
                     if (Vector3.Distance(transform.position, translation) > delta)
                     {
-                        StartCoroutine(Slide(translation));
+                        StartCoroutine(Slide(translation, bSwitchOrientation));
                     }
                 }
             }
 
-            else if (Input.GetKey(KeyCode.W))
+            else if (Input.GetKeyDown(KeyCode.W))
             {
-                if (Physics.Raycast(transform.position, Vector3.forward, out hit))
+                if (Physics.Raycast(transform.position, transform.forward, out hit))
                 {
-                    Vector3 translation = new Vector3(transform.position.x, transform.position.y, hit.transform.position.z - 1);
+                    Vector3 translationPos = hit.point + hit.transform.forward * 0.5f;
+                    Vector3 translationNeg = hit.point - hit.transform.forward * 0.5f;
+
+                    Vector3 translation = (translationPos - transform.position).magnitude < (translationNeg - transform.position).magnitude ? translationPos : translationNeg;
+
+                    bool bSwitchOrientation = false;
+
+                    if (Mathf.Abs(Mathf.Abs(hit.transform.rotation.eulerAngles.y) - 45f) < 0.1f)
+                    {
+                        Debug.Log("Diagonal Wall");
+                        //Wall is diagonal
+                        if (!bIsDiagonal)
+                        {
+                            Debug.Log("Player was not diagonal");
+                            //Player was not diagonal
+                            bSwitchOrientation = true;
+                            bIsDiagonal = true;
+                        }
+                    }
+                    else
+                    {
+                        if (bIsDiagonal)
+                        {
+                            bSwitchOrientation = true;
+                            bIsDiagonal = false;
+                        }
+                    }
 
                     if (Vector3.Distance(transform.position, translation) > delta)
                     {
-                        StartCoroutine(Slide(translation));
+                        StartCoroutine(Slide(translation, bSwitchOrientation));
                     }
                 }
             }
 
-            else if (Input.GetKey(KeyCode.S))
+            else if (Input.GetKeyDown(KeyCode.S))
             {
-                if (Physics.Raycast(transform.position, Vector3.back, out hit))
+                if (Physics.Raycast(transform.position, -transform.forward, out hit))
                 {
-                    Vector3 translation = new Vector3(transform.position.x, transform.position.y, hit.transform.position.z + 1);
+                    Vector3 translationPos = hit.point + hit.transform.forward * 0.5f;
+                    Vector3 translationNeg = hit.point - hit.transform.forward * 0.5f;
+
+                    Vector3 translation = (translationPos - transform.position).magnitude < (translationNeg - transform.position).magnitude ? translationPos : translationNeg;
+
+                    bool bSwitchOrientation = false;
+
+                    if (Mathf.Abs(Mathf.Abs(hit.transform.rotation.eulerAngles.y) - 45f) < 0.1f)
+                    {
+                        //Wall is diagonal
+                        if (!bIsDiagonal)
+                        {
+                            //Player was not diagonal
+                            bSwitchOrientation = true;
+                            bIsDiagonal = true;
+                        }
+                    }
+                    else
+                    {
+                        if (bIsDiagonal)
+                        {
+                            bSwitchOrientation = true;
+                            bIsDiagonal = false;
+                        }
+                    }
 
                     if (Vector3.Distance(transform.position, translation) > delta)
                     {
-                        StartCoroutine(Slide(translation));
+                        StartCoroutine(Slide(translation, bSwitchOrientation));
                     }
                 }
             }
         }
     }
 
-    IEnumerator Slide(Vector3 target)
+    IEnumerator Slide(Vector3 target, bool bSwitchOrientation)
     {
+        Debug.Log(target);
         isSliding = true;
-        while (Vector3.Distance(transform.position, target) > 0)
+        Quaternion initialRotation = transform.rotation;
+        Quaternion targetRotation = bSwitchOrientation && transform.rotation.eulerAngles.y == 0 ? Quaternion.Euler(new Vector3(0, 45, 0)) : Quaternion.identity;
+        float slerpVal = bSwitchOrientation ? 0 : 1;
+        float slerpRate = 10.0f;
+
+        while (Vector3.Distance(transform.position, target) > 0 || slerpVal < 1)
         {
             transform.position = Vector3.MoveTowards(transform.position, target, Time.deltaTime * speed);
+
+            if (bSwitchOrientation)
+            {
+                slerpVal += Time.deltaTime * slerpRate;
+
+                if (slerpVal > 1)
+                {
+                    slerpVal = 1;
+                    transform.rotation = Quaternion.Slerp(initialRotation, targetRotation, slerpVal);
+                }
+                else
+                {
+                    transform.rotation = Quaternion.Slerp(initialRotation, targetRotation, slerpVal);
+                }
+            }
+            
+
             yield return null;
         }
         shaker.TriggerShake();
