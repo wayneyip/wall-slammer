@@ -15,6 +15,7 @@ public abstract class EnemyBase : MonoBehaviour
     public float moveInterval;
     public float moveSpeed;
     protected float moveTimer;
+    public float witchMultiplier; 
 
     protected bool isMoving;
     protected Vector3 movementTargetPosition;
@@ -38,7 +39,7 @@ public abstract class EnemyBase : MonoBehaviour
 
     private void Start()
     {
-        
+        witchMultiplier = 1.0f; 
     }
 
     private void Update()
@@ -57,9 +58,18 @@ public abstract class EnemyBase : MonoBehaviour
             }
         }
 
+        if(Player.witchTime)
+        {
+            witchMultiplier = 0.35f;
+        }
+        else
+        {
+            witchMultiplier = 1.0f; 
+        }
+
         if (isMoving)
         {
-            transform.position += moveSpeed * movementDirection * Time.deltaTime;
+            transform.position += moveSpeed * witchMultiplier * movementDirection * Time.deltaTime;
             if ((transform.position - positionBeforeMovement).magnitude >= targetVectorLength - 0.01f)
             {
                 transform.position = movementTargetPosition;
@@ -94,7 +104,7 @@ public abstract class EnemyBase : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject == GameManager.instance.playerGO)
+        if (collision.gameObject == GameManager.instance.playerGO && !Player.witchTime)
         {
             GameManager.instance.OnGameOver.Invoke();
         }

@@ -15,8 +15,9 @@ GameObject:
   - component: {fileID: 5351620587593874507}
   - component: {fileID: 5351620587593874506}
   - component: {fileID: 5351620587593874501}
+  - component: {fileID: 2200751417978308098}
   m_Layer: 11
-  m_Name: Enemy 1
+  m_Name: Enemy
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -220,4 +221,18 @@ MonoBehaviour:
   initialSize: 0
   moveInterval: 1
   moveSpeed: 5
+  witchMultiplier: 0
   direction: 0
+--- !u!65 &2200751417978308098
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5351620587593874503}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.5, y: 2.5, z: 2.5}
+  m_Center: {x: 0, y: 0, z: 0}

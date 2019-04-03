@@ -12,9 +12,10 @@ public class Player : MonoBehaviour
     private Quaternion initialRotation;
     private bool bActive;
 
+    public static bool witchTime;
+    public static float witchTimer; 
 
     private bool bIsDiagonal;
-
 
     Rigidbody rb;
     float speed = 100.0f;
@@ -45,7 +46,8 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        witchTime = false;
+        witchTimer = 0.0f; 
     }
 
     // Update is called once per frame
@@ -54,6 +56,16 @@ public class Player : MonoBehaviour
         if (!bActive)
             return;
 
+        if(witchTime)
+        {
+            witchTimer -= Time.deltaTime; 
+
+            if(witchTimer <= 0.0f)
+            {
+                witchTime = false;
+                witchTimer = 0.0f; 
+            }
+        }
 
         if (!isSliding)
         {
@@ -80,7 +92,7 @@ public class Player : MonoBehaviour
                 slideDir = -transform.forward;
             }
 
-            if (slideDir.magnitude > 0 && Physics.Raycast(transform.position, slideDir, out hit))
+            if (slideDir.magnitude > 0 && Physics.Raycast(transform.position, slideDir, out hit, Mathf.Infinity, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
             {
 
                 bool bSwitchOrientation = Mathf.Abs(Vector3.Dot(hit.normal, slideDir)) > 0.9 ? false : true;
@@ -154,10 +166,18 @@ public class Player : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
 
-        if(collision.gameObject.layer == (int)Mathf.Log(GameManager.instance.enemyLayer.value, 2))
+        if(collision.gameObject.layer == (int)Mathf.Log(GameManager.instance.enemyLayer.value, 2) && !witchTime)
         {
             GameManager.instance.OnGameOver.Invoke();
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        if(isSliding && !witchTime)
+        {
+            witchTime = true;
+            witchTimer = 5.0f; 
+        }
+    }
 }
