@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Player : MonoBehaviour
 {
 
@@ -13,7 +14,10 @@ public class Player : MonoBehaviour
     private bool bActive;
 
     public static bool witchTime;
-    public static float witchTimer; 
+    public static float witchTimer;
+
+    [SerializeField]
+    private bool allowWitchTime; 
 
     private bool bIsDiagonal;
 
@@ -176,7 +180,7 @@ public class Player : MonoBehaviour
     {
         if(isSliding && !witchTime)
         {
-            witchTime = true;
+            witchTime = true && allowWitchTime;
             witchTimer = 5.0f; 
         }
     }
