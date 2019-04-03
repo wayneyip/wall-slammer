@@ -28,6 +28,8 @@ public class Player : MonoBehaviour
     public ShakeBehavior shaker;
     AudioSource audioSource;
 
+    //TODO: Fix implementation of getting canvas
+    public Canvas witchCanvas; 
 
     private void Awake()
     {
@@ -51,7 +53,9 @@ public class Player : MonoBehaviour
     void Start()
     {
         witchTime = false;
-        witchTimer = 0.0f; 
+        witchTimer = 0.0f;
+
+        //witchCanvas = GetComponent<Canvas>(); 
     }
 
     // Update is called once per frame
@@ -67,7 +71,8 @@ public class Player : MonoBehaviour
             if(witchTimer <= 0.0f)
             {
                 witchTime = false;
-                witchTimer = 0.0f; 
+                witchTimer = 0.0f;
+                witchCanvas.gameObject.SetActive(false);  
             }
         }
 
@@ -181,7 +186,8 @@ public class Player : MonoBehaviour
         if(isSliding && !witchTime)
         {
             witchTime = true && allowWitchTime;
-            witchTimer = 5.0f; 
+            witchTimer = 4.0f;
+            witchCanvas.gameObject.SetActive(true); 
         }
     }
 }
