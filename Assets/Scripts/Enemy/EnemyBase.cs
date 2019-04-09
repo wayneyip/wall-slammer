@@ -23,7 +23,9 @@ public abstract class EnemyBase : MonoBehaviour
     protected Vector3 positionBeforeMovement;
     protected float targetVectorLength;
 
-    public static int sensorSampleRate = 4;
+    Rigidbody rb;
+
+  public static int sensorSampleRate = 4;
 
 
     private void Awake()
@@ -35,6 +37,8 @@ public abstract class EnemyBase : MonoBehaviour
 
         GameManager.instance.OnGameOver.AddListener(_OnGameOver);
         GameManager.instance.OnGameStart.AddListener(_OnGameStart);
+
+        rb = GetComponent<Rigidbody>();
     }
 
     private void Start()
@@ -73,7 +77,7 @@ public abstract class EnemyBase : MonoBehaviour
             if ((transform.position - positionBeforeMovement).magnitude >= targetVectorLength - 0.01f)
             {
                 transform.position = movementTargetPosition;
-                OnMoveFinished();
+                OnMoveFinished(movementDirection);
             }
         }
         else if (canMove)
@@ -88,14 +92,25 @@ public abstract class EnemyBase : MonoBehaviour
     {
         //Debug.Log("Move Started. Target Position: " + movementTargetPosition);
         isMoving = true;
+        if (Player.gravitational)
+        {
+            rb.useGravity = false;
+            rb.velocity = Vector3.zero;
+        }
         positionBeforeMovement = transform.position;
         targetVectorLength = (movementTargetPosition - transform.position).magnitude;
     }
 
-    private void OnMoveFinished()
+    private void OnMoveFinished(Vector3 movementDir)
     {
         //Debug.Log("Move Finished");
         moveTimer = moveInterval;
+        if (Player.gravitational)
+        {
+            rb.velocity = Vector3.zero;
+            rb.AddForce(-movementDir * 50.0f);
+            rb.useGravity = true;
+        }
         isMoving = false;
     }
 

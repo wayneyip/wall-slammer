@@ -20,9 +20,10 @@ public class GameManager : MonoBehaviour
     //Layer Masks
     public LayerMask wallLayer;
     public LayerMask enemyLayer;
+    public LayerMask spikeLayer;
 
-    //Map Data
-    public float unitLength = 1.0f;
+  //Map Data
+  public float unitLength = 1.0f;
 
 
 

@@ -17,9 +17,14 @@ public class Player : MonoBehaviour
     public static float witchTimer;
 
     [SerializeField]
-    private bool allowWitchTime; 
+    private bool allowWitchTime;
 
-    private bool bIsDiagonal;
+    public static bool gravitational;
+
+    [SerializeField]
+    private bool allowGravity;
+
+  private bool bIsDiagonal;
 
     Rigidbody rb;
     float speed = 100.0f;
@@ -33,6 +38,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        gravitational = allowGravity;
 
         bIsDiagonal = transform.rotation.eulerAngles.y == 45;
 
@@ -110,15 +116,20 @@ public class Player : MonoBehaviour
                 
                 if (Vector3.Distance(transform.position, translation) > delta)
                 {
-                    StartCoroutine(Slide(translation, bSwitchOrientation));
+                    StartCoroutine(Slide(translation, bSwitchOrientation, slideDir));
                 }
             }
 
         }
     }
 
-    IEnumerator Slide(Vector3 target, bool bSwitchOrientation)
+    IEnumerator Slide(Vector3 target, bool bSwitchOrientation, Vector3 slideDir)
     {
+        if (allowGravity)
+        {
+            rb.useGravity = false;
+            rb.velocity = Vector3.zero;
+        }
         isSliding = true;
         Quaternion initialRotation = transform.rotation;
         Quaternion targetRotation = bSwitchOrientation && transform.rotation.eulerAngles.y == 0 ? Quaternion.Euler(new Vector3(0, 45, 0)) : Quaternion.identity;
@@ -150,6 +161,13 @@ public class Player : MonoBehaviour
         shaker.TriggerShake();
         audioSource.PlayOneShot(audioSource.clip);
         isSliding = false;
+
+        if (allowGravity)
+        {
+          rb.velocity = Vector3.zero;
+          rb.AddForce(-slideDir * 75.0f);
+          rb.useGravity = true;
+        }
     }
 
     private void _OnGameStart()
@@ -179,7 +197,12 @@ public class Player : MonoBehaviour
         {
             GameManager.instance.OnGameOver.Invoke();
         }
-    }
+
+        if (collision.gameObject.layer == (int)Mathf.Log(GameManager.instance.spikeLayer.value, 2))
+        {
+          GameManager.instance.OnGameOver.Invoke();
+        }
+  }
 
     private void OnTriggerExit(Collider other)
     {
