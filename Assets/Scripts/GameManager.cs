@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,16 +12,23 @@ public class GameManager : MonoBehaviour
     public GameObject playerGO;
     
     //UI References
-    public GameObject GameOverPanel;
+    public GameObject gameOverPanel;
+    public TextMeshProUGUI failText;
+    public TextMeshProUGUI successText;
+    public TextMeshProUGUI timer;
 
     public UnityEvent OnGameStart;
     public UnityEvent OnGameOver;
+    public UnityEvent OnReachedGoal;
     public bool isGameOver;
+    public bool hasReachedGoal;
 
     //Layer Masks
     public LayerMask wallLayer;
     public LayerMask enemyLayer;
     public LayerMask spikeLayer;
+
+    private float startTime;
 
   //Map Data
   public float unitLength = 1.0f;
@@ -54,6 +62,8 @@ public class GameManager : MonoBehaviour
         {
             ResetGame();
         }
+
+        timer.text = "Time: " + (Time.time - startTime);
     }
 
 
@@ -70,17 +80,35 @@ public class GameManager : MonoBehaviour
 
     private void _OnGameStart()
     {
-        if (GameOverPanel != null)
+        if (gameOverPanel != null)
         {
-            GameOverPanel.SetActive(false);
+            gameOverPanel.SetActive(false);
+            isGameOver = false;
+            hasReachedGoal = false;
+            startTime = Time.time;
+            timer.gameObject.SetActive(true);
         }
     }
 
     private void _OnGameOver()
     {
-        if(GameOverPanel != null)
+        if(gameOverPanel != null)
         {
-            GameOverPanel.SetActive(true);
+            timer.gameObject.SetActive(false);
+            gameOverPanel.SetActive(true);
+            if (!hasReachedGoal)
+            {
+                failText.gameObject.SetActive(true);
+                successText.gameObject.SetActive(false);
+            }
+            else
+            {
+                failText.gameObject.SetActive(false);
+                successText.text = "Your time: " + (Time.time - startTime);
+                successText.gameObject.SetActive(true);
+            }
+
+            isGameOver = true;
         }
     }
 

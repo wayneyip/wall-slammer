@@ -28,7 +28,7 @@ public abstract class EnemyBase : MonoBehaviour
   public static int sensorSampleRate = 4;
 
 
-    private void Awake()
+    public void Awake()
     {
         initialPosition = transform.position;
         initialRotation = transform.rotation;

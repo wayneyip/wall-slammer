@@ -107,7 +107,7 @@ public class Player : MonoBehaviour
                 slideDir = -transform.forward;
             }
 
-            if (slideDir.magnitude > 0 && Physics.Raycast(transform.position, slideDir, out hit, Mathf.Infinity, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+            if (slideDir.magnitude > 0 && Physics.Raycast(transform.position, slideDir, out hit, Mathf.Infinity, GameManager.instance.wallLayer.value, QueryTriggerInteraction.Ignore))
             {
 
                 bool bSwitchOrientation = Mathf.Abs(Vector3.Dot(hit.normal, slideDir)) > 0.9 ? false : true;
@@ -154,10 +154,16 @@ public class Player : MonoBehaviour
                     transform.rotation = Quaternion.Slerp(initialRotation, targetRotation, slerpVal);
                 }
             }
-            
+
+            if (GameManager.instance.isGameOver)
+            {
+                yield break;
+            }
+
 
             yield return null;
         }
+
         shaker.TriggerShake();
         audioSource.PlayOneShot(audioSource.clip);
         isSliding = false;
@@ -210,7 +216,8 @@ public class Player : MonoBehaviour
         {
             witchTime = true && allowWitchTime;
             witchTimer = 4.0f;
-            witchCanvas.gameObject.SetActive(true); 
+            if(witchCanvas != null)
+                witchCanvas.gameObject.SetActive(true); 
         }
     }
 }
