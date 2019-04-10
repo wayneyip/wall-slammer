@@ -28,7 +28,7 @@ public abstract class EnemyBase : MonoBehaviour
   public static int sensorSampleRate = 4;
 
 
-    public void Awake()
+    protected virtual void Awake()
     {
         initialPosition = transform.position;
         initialRotation = transform.rotation;
@@ -52,7 +52,7 @@ public abstract class EnemyBase : MonoBehaviour
             return;
 
         bool canMove = false;
-        if(moveTimer > 0)
+        if(moveTimer >= 0)
         {
             moveTimer -= Time.deltaTime;
             if(moveTimer <= 0)

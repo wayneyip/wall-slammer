@@ -24,17 +24,23 @@ public class Player : MonoBehaviour
     [SerializeField]
     private bool allowGravity;
 
-  private bool bIsDiagonal;
+    public bool allowDoubleMove;
+    public bool hasDoubleMoved;
+
+    private bool bIsDiagonal;
 
     Rigidbody rb;
     float speed = 100.0f;
-    bool isSliding = false;
+    public bool isSliding = false;
     float delta = 0.1f;
     public ShakeBehavior shaker;
     AudioSource audioSource;
 
     //TODO: Fix implementation of getting canvas
-    public Canvas witchCanvas; 
+    public Canvas witchCanvas;
+
+    private IEnumerator slideCoroutine;
+
 
     private void Awake()
     {
@@ -50,6 +56,8 @@ public class Player : MonoBehaviour
         initialPosition = transform.position;
         initialRotation = transform.rotation;
         initialSize = (int)transform.lossyScale.x;
+
+        hasDoubleMoved = false;
 
         GameManager.instance.OnGameOver.AddListener(_OnGameOver);
         GameManager.instance.OnGameStart.AddListener(_OnGameStart);
@@ -82,48 +90,67 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (!isSliding)
+        Slide();
+
+    }
+
+    private void Slide()
+    {
+        if((!allowDoubleMove && isSliding) || (allowDoubleMove && hasDoubleMoved))
         {
-            RaycastHit hit = new RaycastHit();
-            Vector3 slideDir = new Vector3(0, 0, 0);
+            return;
+        }
 
-            if (Input.GetKeyDown(KeyCode.A))
+        RaycastHit hit = new RaycastHit();
+        Vector3 slideDir = new Vector3(0, 0, 0);
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            slideDir = -transform.right;
+        }
+
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            slideDir = transform.right;
+        }
+
+        else if (Input.GetKeyDown(KeyCode.W))
+        {
+            slideDir = transform.forward;
+        }
+
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            slideDir = -transform.forward;
+        }
+
+        if (slideDir.magnitude > 0 && Physics.Raycast(transform.position, slideDir, out hit, Mathf.Infinity, GameManager.instance.wallLayer.value, QueryTriggerInteraction.Ignore))
+        {
+
+            bool bSwitchOrientation = Mathf.Abs(Vector3.Dot(hit.normal, slideDir)) > 0.9 ? false : true;
+
+            Vector3 translation = hit.point + hit.normal * 0.5f;
+
+            if (Vector3.Distance(transform.position, translation) > delta)
             {
-                slideDir = -transform.right;
-            }
-
-            else if (Input.GetKeyDown(KeyCode.D))
-            {
-                slideDir = transform.right;
-            }
-
-            else if (Input.GetKeyDown(KeyCode.W))
-            {
-                slideDir = transform.forward;
-            }
-
-            else if (Input.GetKeyDown(KeyCode.S))
-            {
-                slideDir = -transform.forward;
-            }
-
-            if (slideDir.magnitude > 0 && Physics.Raycast(transform.position, slideDir, out hit, Mathf.Infinity, GameManager.instance.wallLayer.value, QueryTriggerInteraction.Ignore))
-            {
-
-                bool bSwitchOrientation = Mathf.Abs(Vector3.Dot(hit.normal, slideDir)) > 0.9 ? false : true;
-
-                Vector3 translation = hit.point + hit.normal * 0.5f;
-                
-                if (Vector3.Distance(transform.position, translation) > delta)
+                if (isSliding)
                 {
-                    StartCoroutine(Slide(translation, bSwitchOrientation, slideDir));
+                    hasDoubleMoved = true;
+                    StopSliding();
                 }
-            }
 
+                slideCoroutine = _Slide(translation, bSwitchOrientation, slideDir);
+                StartCoroutine(slideCoroutine);
+            }
         }
     }
 
-    IEnumerator Slide(Vector3 target, bool bSwitchOrientation, Vector3 slideDir)
+    private void StopSliding()
+    {
+        StopCoroutine(slideCoroutine);
+    }
+
+    IEnumerator _Slide(Vector3 target, bool bSwitchOrientation, Vector3 slideDir)
     {
         if (allowGravity)
         {
@@ -135,6 +162,8 @@ public class Player : MonoBehaviour
         Quaternion targetRotation = bSwitchOrientation && transform.rotation.eulerAngles.y == 0 ? Quaternion.Euler(new Vector3(0, 45, 0)) : Quaternion.identity;
         float slerpVal = bSwitchOrientation ? 0 : 1;
         float slerpRate = 10.0f;
+
+        speed = allowDoubleMove && !hasDoubleMoved ? 30.0f : 100.0f;
 
         while (Vector3.Distance(transform.position, target) > 0 || slerpVal < 1)
         {
@@ -160,7 +189,6 @@ public class Player : MonoBehaviour
                 yield break;
             }
 
-
             yield return null;
         }
 
@@ -174,6 +202,8 @@ public class Player : MonoBehaviour
           rb.AddForce(-slideDir * 75.0f);
           rb.useGravity = true;
         }
+
+        hasDoubleMoved = false;
     }
 
     private void _OnGameStart()
@@ -182,6 +212,7 @@ public class Player : MonoBehaviour
         transform.rotation = initialRotation;
         bActive = true;
         isSliding = false;
+        hasDoubleMoved = false;
         size = initialSize;
     }
 

@@ -11,6 +11,12 @@ public class GravityEnemy : EnemyBase
     int dirIndex = 0;
 
 
+    protected override void Awake()
+    {
+        base.Awake();
+        GameManager.instance.OnGameStart.AddListener(ResetSequence);
+    }
+
     private void LateUpdate()
     {
         if (size > 1)
