@@ -163,7 +163,7 @@ public class Player : MonoBehaviour
         float slerpVal = bSwitchOrientation ? 0 : 1;
         float slerpRate = 10.0f;
 
-        speed = allowDoubleMove && !hasDoubleMoved ? 30.0f : 100.0f;
+        speed = allowDoubleMove && !hasDoubleMoved ? 25.0f : 100.0f;
 
         while (Vector3.Distance(transform.position, target) > 0 || slerpVal < 1)
         {
