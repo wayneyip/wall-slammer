@@ -29,6 +29,8 @@ public class Player : MonoBehaviour
 
     private bool bIsDiagonal;
 
+    private bool dead; 
+
     Rigidbody rb;
     float speed = 100.0f;
     public bool isSliding = false;
@@ -66,10 +68,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        witchTime = false;
-        witchTimer = 0.0f;
 
-        //witchCanvas = GetComponent<Canvas>(); 
     }
 
     // Update is called once per frame
@@ -124,7 +123,14 @@ public class Player : MonoBehaviour
             slideDir = -transform.forward;
         }
 
-        if (slideDir.magnitude > 0 && Physics.Raycast(transform.position, slideDir, out hit, Mathf.Infinity, GameManager.instance.wallLayer.value, QueryTriggerInteraction.Ignore))
+        LayerMask mask = GameManager.instance.wallLayer.value; 
+       
+        if(allowWitchTime)
+        {
+            mask = mask | GameManager.instance.enemyLayer.value; 
+        }
+
+        if (slideDir.magnitude > 0 && Physics.Raycast(transform.position, slideDir, out hit, Mathf.Infinity, mask, QueryTriggerInteraction.Ignore))
         {
 
             bool bSwitchOrientation = Mathf.Abs(Vector3.Dot(hit.normal, slideDir)) > 0.9 ? false : true;
@@ -213,6 +219,15 @@ public class Player : MonoBehaviour
         bActive = true;
         isSliding = false;
         hasDoubleMoved = false;
+        witchTime = false;
+        witchTimer = 0.0f;
+        dead = false;
+
+        if(witchCanvas != null)
+        {
+            witchCanvas.gameObject.SetActive(false);
+        }
+
         size = initialSize;
     }
 
@@ -232,18 +247,20 @@ public class Player : MonoBehaviour
 
         if(collision.gameObject.layer == (int)Mathf.Log(GameManager.instance.enemyLayer.value, 2) && !witchTime)
         {
+            dead = true; 
             GameManager.instance.OnGameOver.Invoke();
         }
 
         if (collision.gameObject.layer == (int)Mathf.Log(GameManager.instance.spikeLayer.value, 2))
         {
-          GameManager.instance.OnGameOver.Invoke();
+            dead = true; 
+            GameManager.instance.OnGameOver.Invoke();
         }
   }
 
     private void OnTriggerExit(Collider other)
     {
-        if(isSliding && !witchTime)
+        if(isSliding && !witchTime && !dead)
         {
             witchTime = true && allowWitchTime;
             witchTimer = 4.0f;
