@@ -101,22 +101,22 @@ public class Player : MonoBehaviour
         RaycastHit hit = new RaycastHit();
         Vector3 slideDir = new Vector3(0, 0, 0);
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             slideDir = -transform.right;
         }
 
-        else if (Input.GetKeyDown(KeyCode.D))
+        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             slideDir = transform.right;
         }
 
-        else if (Input.GetKeyDown(KeyCode.W))
+        else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             slideDir = transform.forward;
         }
 
-        else if (Input.GetKeyDown(KeyCode.S))
+        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             slideDir = -transform.forward;
         }

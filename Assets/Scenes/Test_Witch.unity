@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657838, g: 0.49641234, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2282,6 +2282,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerGO: {fileID: 595093919}
+  shaker: {fileID: 1175011724}
   gameOverPanel: {fileID: 906620944}
   failText: {fileID: 906620943}
   successText: {fileID: 906620942}
@@ -2306,6 +2307,9 @@ MonoBehaviour:
   wallLayer:
     serializedVersion: 2
     m_Bits: 512
+  breakableLayer:
+    serializedVersion: 2
+    m_Bits: 0
   enemyLayer:
     serializedVersion: 2
     m_Bits: 2048
@@ -2577,7 +2581,6 @@ MonoBehaviour:
   allowDoubleMove: 0
   hasDoubleMoved: 0
   isSliding: 0
-  shaker: {fileID: 1175011724}
   witchCanvas: {fileID: 1165557794}
 --- !u!65 &595093924
 BoxCollider:
@@ -6094,7 +6097,6 @@ MonoBehaviour:
   allowDoubleMove: 0
   hasDoubleMoved: 0
   isSliding: 0
-  shaker: {fileID: 0}
   witchCanvas: {fileID: 0}
 --- !u!65 &1717415799
 BoxCollider:

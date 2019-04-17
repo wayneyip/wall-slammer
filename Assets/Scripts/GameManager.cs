@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject playerGO;
     public ShakeBehavior shaker;
-    private AudioSource audioSource;
+    private AudioSource playerAudio;
     
     //UI References
     public GameObject gameOverPanel;
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
         OnGameStart.AddListener(_OnGameStart);
         OnGameOver.AddListener(_OnGameOver);
 
-        audioSource = GetComponent<AudioSource>();
+        playerAudio = playerGO.GetComponent<AudioSource>();
     }
 
     // Start is called before the first frame update
@@ -74,8 +74,15 @@ public class GameManager : MonoBehaviour
         {
             ResetGame();
         }
-
-        timer.text = "Time: " + (Time.time - startTime);
+        float timeDiff = Time.time - startTime;
+        int timeSec = (int) timeDiff;
+        int timeMillisec = (int) ((timeDiff - timeSec) * 100);
+        string zero = "";
+        if (timeMillisec < 10)
+        {
+          zero = "0";
+        }
+        timer.text = timeSec + ":" + zero + timeMillisec;
     }
 
 
@@ -132,7 +139,7 @@ public class GameManager : MonoBehaviour
     public void PlayCollisionEffect()
     {
         shaker.TriggerShake();
-        audioSource.PlayOneShot(audioSource.clip);
+        playerAudio.PlayOneShot(playerAudio.clip);
     }
 
 }
