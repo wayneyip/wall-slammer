@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     public static GameManager instance; 
 
     public GameObject playerGO;
+    public ShakeBehavior shaker;
+    private AudioSource audioSource;
     
     //UI References
     public GameObject gameOverPanel;
@@ -26,6 +28,7 @@ public class GameManager : MonoBehaviour
 
     //Layer Masks
     public LayerMask wallLayer;
+    public LayerMask breakableLayer;
     public LayerMask enemyLayer;
     public LayerMask spikeLayer;
 
@@ -48,6 +51,8 @@ public class GameManager : MonoBehaviour
 
         OnGameStart.AddListener(_OnGameStart);
         OnGameOver.AddListener(_OnGameOver);
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Start is called before the first frame update
@@ -99,6 +104,11 @@ public class GameManager : MonoBehaviour
 
     private void _OnGameOver()
     {
+        if (isGameOver)
+        {
+            return;
+        }
+
         if(gameOverPanel != null)
         {
             timer.gameObject.SetActive(false);
@@ -117,6 +127,12 @@ public class GameManager : MonoBehaviour
 
             isGameOver = true;
         }
+    }
+
+    public void PlayCollisionEffect()
+    {
+        shaker.TriggerShake();
+        audioSource.PlayOneShot(audioSource.clip);
     }
 
 }

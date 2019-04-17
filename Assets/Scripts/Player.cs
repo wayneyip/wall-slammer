@@ -15,14 +15,13 @@ public class Player : MonoBehaviour
 
     public static bool witchTime;
     public static float witchTimer;
-
-    [SerializeField]
-    private bool allowWitchTime;
+    
+    public bool allowWitchTime;
 
     public static bool gravitational;
 
-    [SerializeField]
-    private bool allowGravity;
+    private bool useGravity;
+    public bool allowGravity;
 
     public bool allowDoubleMove;
     public bool hasDoubleMoved;
@@ -35,8 +34,7 @@ public class Player : MonoBehaviour
     float speed = 100.0f;
     public bool isSliding = false;
     float delta = 0.1f;
-    public ShakeBehavior shaker;
-    AudioSource audioSource;
+    
 
     //TODO: Fix implementation of getting canvas
     public Canvas witchCanvas;
@@ -53,13 +51,13 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
-        audioSource = GetComponent<AudioSource>();
-
         initialPosition = transform.position;
         initialRotation = transform.rotation;
         initialSize = (int)transform.lossyScale.x;
 
         hasDoubleMoved = false;
+
+        useGravity = allowGravity;
 
         GameManager.instance.OnGameOver.AddListener(_OnGameOver);
         GameManager.instance.OnGameStart.AddListener(_OnGameStart);
@@ -123,7 +121,7 @@ public class Player : MonoBehaviour
             slideDir = -transform.forward;
         }
 
-        LayerMask mask = GameManager.instance.wallLayer.value; 
+        LayerMask mask = GameManager.instance.wallLayer.value | GameManager.instance.breakableLayer; 
        
         if(allowWitchTime)
         {
@@ -198,8 +196,7 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-        shaker.TriggerShake();
-        audioSource.PlayOneShot(audioSource.clip);
+        GameManager.instance.PlayCollisionEffect();
         isSliding = false;
 
         if (allowGravity)
@@ -223,7 +220,11 @@ public class Player : MonoBehaviour
         witchTimer = 0.0f;
         dead = false;
 
-        if(witchCanvas != null)
+        allowGravity = useGravity;
+        rb.useGravity = useGravity;
+        rb.velocity = Vector3.zero;
+
+        if (witchCanvas != null)
         {
             witchCanvas.gameObject.SetActive(false);
         }
@@ -245,6 +246,8 @@ public class Player : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
 
+        Debug.Log(collision.gameObject.name);
+
         if(collision.gameObject.layer == (int)Mathf.Log(GameManager.instance.enemyLayer.value, 2) && !witchTime)
         {
             dead = true; 
@@ -256,7 +259,23 @@ public class Player : MonoBehaviour
             dead = true; 
             GameManager.instance.OnGameOver.Invoke();
         }
-  }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+
+        if (collision.gameObject.layer == (int)Mathf.Log(GameManager.instance.enemyLayer.value, 2) && !witchTime)
+        {
+            dead = true;
+            GameManager.instance.OnGameOver.Invoke();
+        }
+
+        if (collision.gameObject.layer == (int)Mathf.Log(GameManager.instance.spikeLayer.value, 2))
+        {
+            dead = true;
+            GameManager.instance.OnGameOver.Invoke();
+        }
+    }
 
     private void OnTriggerExit(Collider other)
     {
