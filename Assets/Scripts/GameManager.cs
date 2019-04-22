@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
         OnGameOver.AddListener(_OnGameOver);
 
         playerAudio = playerGO.GetComponent<AudioSource>();
-    }
+  }
 
     // Start is called before the first frame update
     void Start()
@@ -67,10 +67,14 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && hasReachedGoal)
         {
             int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+            if (nextSceneIndex == 3)
+            {
+                GameObject.FindGameObjectWithTag("Music").GetComponent<Music>().StopMusic();
+            }
             SceneManager.LoadScene(nextSceneIndex);
         }
 
-    if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             ResetGame();
         }
@@ -106,8 +110,9 @@ public class GameManager : MonoBehaviour
             hasReachedGoal = false;
             startTime = Time.time;
             timer.gameObject.SetActive(true);
-        }
+            GameObject.FindGameObjectWithTag("Music").GetComponent<Music>().PlayMusic();
     }
+  }
 
     private void _OnGameOver()
     {

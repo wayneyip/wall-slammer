@@ -11,7 +11,7 @@ public class GravityTrigger : MonoBehaviour
             other.GetComponent<Rigidbody>().useGravity = true;
             if(other.GetComponent<Player>() != null)
             {
-                other.GetComponent<Player>().allowGravity = true;
+                other.GetComponent<Player>().SetAllowGravity();
             }
         }
     }

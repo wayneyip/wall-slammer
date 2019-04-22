@@ -18,9 +18,9 @@ public class Player : MonoBehaviour
     
     public bool allowWitchTime;
 
-    public static bool gravitational;
-
     private bool useGravity;
+
+    public static bool isGravitational;
     public bool allowGravity;
 
     public bool allowDoubleMove;
@@ -44,7 +44,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        gravitational = allowGravity;
+        isGravitational = allowGravity;
 
         bIsDiagonal = transform.rotation.eulerAngles.y == 45;
 
@@ -86,9 +86,7 @@ public class Player : MonoBehaviour
                 witchCanvas.gameObject.SetActive(false);  
             }
         }
-
         Slide();
-
     }
 
     private void Slide()
@@ -219,7 +217,12 @@ public class Player : MonoBehaviour
         witchTime = false;
         witchTimer = 0.0f;
         dead = false;
+        GetComponent<TrailRenderer>().enabled = true;
+        GetComponent<MeshRenderer>().enabled = true;
+        GetComponent<ParticleSystem>().gravityModifier = 0;
+        GetComponent<ParticleSystem>().Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
+    isGravitational = useGravity;
         allowGravity = useGravity;
         rb.useGravity = useGravity;
         rb.velocity = Vector3.zero;
@@ -235,6 +238,17 @@ public class Player : MonoBehaviour
     private void _OnGameOver()
     {
         bActive = false;
+        rb.velocity = Vector3.zero;
+        if (GetComponent<MeshRenderer>().enabled)
+        {
+            if (isGravitational)
+            {
+               GetComponent<ParticleSystem>().gravityModifier = 1;
+            }
+            GetComponent<ParticleSystem>().Play();
+        }
+        GetComponent<MeshRenderer>().enabled = false;
+        GetComponent<TrailRenderer>().enabled = false;
     }
 
     private void UpdateSizeVisual()
@@ -286,5 +300,11 @@ public class Player : MonoBehaviour
             if(witchCanvas != null)
                 witchCanvas.gameObject.SetActive(true); 
         }
+    }
+
+    public void SetAllowGravity()
+    {
+        isGravitational = true;
+        allowGravity = true;
     }
 }

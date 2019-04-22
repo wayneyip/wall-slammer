@@ -25,6 +25,7 @@ public class Breakable : MonoBehaviour
             mr.enabled = false;
             myCollider.enabled = false;
             GameManager.instance.PlayCollisionEffect();
+            collision.gameObject.GetComponent<ParticleSystem>().Play();
         }
     }
 
