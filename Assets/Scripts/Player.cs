@@ -121,7 +121,7 @@ public class Player : MonoBehaviour
             slideDir = -transform.forward;
         }
 
-        LayerMask mask = GameManager.instance.wallLayer.value | GameManager.instance.breakableLayer; 
+        LayerMask mask = GameManager.instance.wallLayer.value | GameManager.instance.breakableLayer | GameManager.instance.witchLayer; 
        
         if(allowWitchTime)
         {
@@ -254,6 +254,14 @@ public class Player : MonoBehaviour
             GameManager.instance.OnGameOver.Invoke();
         }
 
+        if (collision.gameObject.layer == (int)Mathf.Log(GameManager.instance.witchLayer.value, 2) && !witchTime)
+        {
+            witchTime = true && allowWitchTime;
+            witchTimer = 4.0f;
+            if (witchCanvas != null)
+                witchCanvas.gameObject.SetActive(true);
+        }
+
         if (collision.gameObject.layer == (int)Mathf.Log(GameManager.instance.spikeLayer.value, 2))
         {
             dead = true; 
@@ -281,10 +289,10 @@ public class Player : MonoBehaviour
     {
         if(isSliding && !witchTime && !dead)
         {
-            witchTime = true && allowWitchTime;
-            witchTimer = 4.0f;
-            if(witchCanvas != null)
-                witchCanvas.gameObject.SetActive(true); 
+            //witchTime = true && allowWitchTime;
+            //witchTimer = 4.0f;
+            //if(witchCanvas != null)
+                //witchCanvas.gameObject.SetActive(true); 
         }
     }
 }

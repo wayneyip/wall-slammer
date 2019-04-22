@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
     public LayerMask breakableLayer;
     public LayerMask enemyLayer;
     public LayerMask spikeLayer;
+    public LayerMask witchLayer; 
 
     private float startTime;
 
