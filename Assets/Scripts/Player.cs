@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
 
     public static bool witchTime;
     public static float witchTimer;
+    public static bool inWitchTime; 
     
     public bool allowWitchTime;
 
@@ -77,7 +78,8 @@ public class Player : MonoBehaviour
 
         if(witchTime)
         {
-            witchTimer -= Time.deltaTime; 
+            witchTimer -= Time.deltaTime;
+            inWitchTime = true; 
 
             if(witchTimer <= 0.0f)
             {
@@ -86,6 +88,11 @@ public class Player : MonoBehaviour
                 witchCanvas.gameObject.SetActive(false);  
             }
         }
+        else
+        {
+            inWitchTime = false; 
+        }
+
         Slide();
     }
 
@@ -314,5 +321,10 @@ public class Player : MonoBehaviour
     {
         isGravitational = true;
         allowGravity = true;
+    }
+
+    public bool isWitchTime()
+    {
+        return witchTime && !inWitchTime; 
     }
 }
