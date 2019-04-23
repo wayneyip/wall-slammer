@@ -12,8 +12,6 @@ public class Boss : MonoBehaviour
     public Vector3 attackDirection;
     private bool playerDetectionEnabled;
 
-    private bool useGravity;
-
     private float activationTimer;
     private float attackTimer;
 
@@ -41,7 +39,6 @@ public class Boss : MonoBehaviour
         GameManager.instance.OnGameStart.AddListener(_OnGameStart);
 
         rb = GetComponent<Rigidbody>();
-        useGravity = rb.useGravity;
 
         mr = GetComponent<MeshRenderer>();
 
@@ -131,6 +128,8 @@ public class Boss : MonoBehaviour
     {
         Debug.Log("Begin Attack");
 
+      
+
         if (Physics.Raycast(transform.position, attackDirection, out RaycastHit hit, Mathf.Infinity, GameManager.instance.wallLayer.value, QueryTriggerInteraction.Ignore))
         {
 
@@ -161,6 +160,10 @@ public class Boss : MonoBehaviour
         mr.material.color = initialColor;
         rb.velocity = Vector3.zero;
 
+        if (Player.isGravitational)
+        {
+          rb.useGravity = true;
+        }
         EnablePlayerDetection();
     }
 
@@ -198,9 +201,12 @@ public class Boss : MonoBehaviour
     {
 
         isSliding = true;
-
         float speed = moveSpeed;
 
+        if (Player.isGravitational)
+        {
+          rb.useGravity = false;
+        }
         while (Vector3.Distance(transform.position, target) > 0 )
         {
             transform.position = Vector3.MoveTowards(transform.position, target, Time.deltaTime * speed);
@@ -231,7 +237,7 @@ public class Boss : MonoBehaviour
 
         mr.material.color = initialColor;
 
-        rb.useGravity = useGravity;
+        rb.useGravity = Player.isGravitational;
         rb.velocity = Vector3.zero;
 
         bActive = true;
@@ -254,7 +260,6 @@ public class Boss : MonoBehaviour
         {
             GameManager.instance.OnGameOver.Invoke();
         }
-
     }
 
     private void OnCollisionStay(Collision collision)

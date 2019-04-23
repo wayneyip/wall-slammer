@@ -92,7 +92,7 @@ public abstract class EnemyBase : MonoBehaviour
     {
         //Debug.Log("Move Started. Target Position: " + movementTargetPosition);
         isMoving = true;
-        if (Player.gravitational)
+        if (Player.isGravitational)
         {
             rb.useGravity = false;
             rb.velocity = Vector3.zero;
@@ -105,7 +105,7 @@ public abstract class EnemyBase : MonoBehaviour
     {
         //Debug.Log("Move Finished");
         moveTimer = moveInterval;
-        if (Player.gravitational)
+        if (Player.isGravitational)
         {
             rb.velocity = Vector3.zero;
             rb.AddForce(-movementDir * 50.0f);

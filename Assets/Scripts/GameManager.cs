@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject playerGO;
     public ShakeBehavior shaker;
-    private AudioSource audioSource;
+    private AudioSource playerAudio;
     
     //UI References
     public GameObject gameOverPanel;
@@ -53,8 +53,8 @@ public class GameManager : MonoBehaviour
         OnGameStart.AddListener(_OnGameStart);
         OnGameOver.AddListener(_OnGameOver);
 
-        audioSource = GetComponent<AudioSource>();
-    }
+        playerAudio = playerGO.GetComponent<AudioSource>();
+  }
 
     // Start is called before the first frame update
     void Start()
@@ -68,15 +68,26 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && hasReachedGoal)
         {
             int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+            if (nextSceneIndex == 3)
+            {
+                GameObject.FindGameObjectWithTag("Music").GetComponent<Music>().StopMusic();
+            }
             SceneManager.LoadScene(nextSceneIndex);
         }
 
-    if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             ResetGame();
         }
-
-        timer.text = "Time: " + (Time.time - startTime);
+        float timeDiff = Time.time - startTime;
+        int timeSec = (int) timeDiff;
+        int timeMillisec = (int) ((timeDiff - timeSec) * 100);
+        string zero = "";
+        if (timeMillisec < 10)
+        {
+          zero = "0";
+        }
+        timer.text = timeSec + ":" + zero + timeMillisec;
     }
 
 
@@ -100,8 +111,9 @@ public class GameManager : MonoBehaviour
             hasReachedGoal = false;
             startTime = Time.time;
             timer.gameObject.SetActive(true);
-        }
+            GameObject.FindGameObjectWithTag("Music").GetComponent<Music>().PlayMusic();
     }
+  }
 
     private void _OnGameOver()
     {
@@ -133,7 +145,7 @@ public class GameManager : MonoBehaviour
     public void PlayCollisionEffect()
     {
         shaker.TriggerShake();
-        audioSource.PlayOneShot(audioSource.clip);
+        playerAudio.PlayOneShot(playerAudio.clip);
     }
 
 }

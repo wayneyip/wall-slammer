@@ -9,7 +9,7 @@ TagManager:
   - Block
   - Enemy
   - Target
-  - WitchTrigger
+  - Music
   layers:
   - Default
   - TransparentFX
