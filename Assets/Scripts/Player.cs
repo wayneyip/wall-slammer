@@ -317,10 +317,16 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void SetAllowGravity()
+    public void SetEnableGravity()
     {
         isGravitational = true;
         allowGravity = true;
+    }
+
+    public void SetDisableGravity()
+    {
+        isGravitational = false;
+        allowGravity = false;
     }
 
     public bool isWitchTime()
