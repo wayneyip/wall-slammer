@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance; 
 
     public GameObject playerGO;
+    public GameObject bossGO;
     public ShakeBehavior shaker;
     private AudioSource playerAudio;
     

@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    public Transform playerCheckpointTransform;
+    public Transform bossCheckpointTransform;
+
+    private void OnTriggerEnter(Collider other)
     {
-        
+
+        if (other.gameObject == GameManager.instance.playerGO)
+        {
+            GameManager.instance.playerGO.GetComponent<Player>().initialPosition = playerCheckpointTransform.position;
+            GameManager.instance.playerGO.GetComponent<Player>().useGravity = GameManager.instance.playerGO.GetComponent<Player>().allowGravity;
+            GameManager.instance.bossGO.GetComponent<Boss>().initialPosition = bossCheckpointTransform.position;
+        }
+
     }
 }
