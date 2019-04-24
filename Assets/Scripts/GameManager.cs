@@ -18,8 +18,10 @@ public class GameManager : MonoBehaviour
     //UI References
     public GameObject gameOverPanel;
     public TextMeshProUGUI failText;
-    public TextMeshProUGUI successText;
-    public TextMeshProUGUI timer;
+    public TextMeshProUGUI failText2;
+  public TextMeshProUGUI successText;
+  public TextMeshProUGUI successText2;
+  public TextMeshProUGUI timer;
 
     public UnityEvent OnGameStart;
     public UnityEvent OnGameOver;
@@ -69,9 +71,9 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && hasReachedGoal)
         {
             int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
-            if (nextSceneIndex == 3)
+            if (nextSceneIndex == 5)
             {
-                GameObject.FindGameObjectWithTag("Music").GetComponent<Music>().StopMusic();
+        Destroy(GameObject.FindGameObjectWithTag("Music"));
             }
             SceneManager.LoadScene(nextSceneIndex);
         }
@@ -80,15 +82,7 @@ public class GameManager : MonoBehaviour
         {
             ResetGame();
         }
-        float timeDiff = Time.time - startTime;
-        int timeSec = (int) timeDiff;
-        int timeMillisec = (int) ((timeDiff - timeSec) * 100);
-        string zero = "";
-        if (timeMillisec < 10)
-        {
-          zero = "0";
-        }
-        timer.text = timeSec + ":" + zero + timeMillisec;
+    timer.text = GetDisplayTime();
     }
 
 
@@ -130,13 +124,17 @@ public class GameManager : MonoBehaviour
             if (!hasReachedGoal)
             {
                 failText.gameObject.SetActive(true);
+                failText2.gameObject.SetActive(true);
                 successText.gameObject.SetActive(false);
+                successText2.gameObject.SetActive(false);
             }
             else
             {
                 failText.gameObject.SetActive(false);
-                successText.text = "Your time: " + (Time.time - startTime);
+                failText2.gameObject.SetActive(false);
+                successText.text = "Your time: " + GetDisplayTime();
                 successText.gameObject.SetActive(true);
+                successText2.gameObject.SetActive(true);
             }
 
             isGameOver = true;
@@ -148,5 +146,19 @@ public class GameManager : MonoBehaviour
         shaker.TriggerShake();
         playerAudio.PlayOneShot(playerAudio.clip);
     }
+
+    private string GetDisplayTime()
+  {
+
+    float timeDiff = Time.time - startTime;
+    int timeSec = (int)timeDiff;
+    int timeMillisec = (int)((timeDiff - timeSec) * 100);
+    string zero = "";
+    if (timeMillisec < 10)
+    {
+      zero = "0";
+    }
+    return timeSec + ":" + zero + timeMillisec;
+  }
 
 }

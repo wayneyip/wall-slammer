@@ -306,15 +306,19 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        if(isSliding && !witchTime && !dead)
-        {
-            //witchTime = true && allowWitchTime;
-            //witchTimer = 4.0f;
-            //if(witchCanvas != null)
-                //witchCanvas.gameObject.SetActive(true); 
-        }
+        if (other.gameObject.tag == "Witch")
+    {
+      if (isSliding && !witchTime && !dead)
+      {
+        witchTime = true && allowWitchTime;
+        witchTimer = 4.0f;
+        if (witchCanvas != null)
+          witchCanvas.gameObject.SetActive(true);
+      }
+    }
+
     }
 
     public void SetEnableGravity()
