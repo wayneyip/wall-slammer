@@ -22,7 +22,7 @@ public class Boss : MonoBehaviour
     public bool isActivating;
 
     private Color initialColor;
-    private Vector3 initialPosition;
+    public Vector3 initialPosition;
     private Quaternion initialRotation;
     private bool bActive;
 

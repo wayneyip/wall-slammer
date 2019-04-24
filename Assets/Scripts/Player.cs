@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     [Range(1, 2)]
     public int initialSize;
     private int size;
-    private Vector3 initialPosition;
+    public Vector3 initialPosition;
     private Quaternion initialRotation;
     private bool bActive;
 
@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     
     public bool allowWitchTime;
 
-    private bool useGravity;
+    public bool useGravity;
 
     public static bool isGravitational;
     public bool allowGravity;
@@ -229,7 +229,7 @@ public class Player : MonoBehaviour
         GetComponent<ParticleSystem>().gravityModifier = 0;
         GetComponent<ParticleSystem>().Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
-    isGravitational = useGravity;
+        isGravitational = useGravity;
         allowGravity = useGravity;
         rb.useGravity = useGravity;
         rb.velocity = Vector3.zero;
@@ -317,10 +317,16 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void SetAllowGravity()
+    public void SetEnableGravity()
     {
         isGravitational = true;
         allowGravity = true;
+    }
+
+    public void SetDisableGravity()
+    {
+        isGravitational = false;
+        allowGravity = false;
     }
 
     public bool isWitchTime()
