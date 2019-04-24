@@ -229,7 +229,7 @@ public class Player : MonoBehaviour
         GetComponent<ParticleSystem>().gravityModifier = 0;
         GetComponent<ParticleSystem>().Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
-    isGravitational = useGravity;
+        isGravitational = useGravity;
         allowGravity = useGravity;
         rb.useGravity = useGravity;
         rb.velocity = Vector3.zero;
@@ -266,10 +266,9 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-
         Debug.Log(collision.gameObject.name);
 
-        if(collision.gameObject.layer == (int)Mathf.Log(GameManager.instance.enemyLayer.value, 2) && !witchTime)
+        if (collision.gameObject.layer == (int)Mathf.Log(GameManager.instance.enemyLayer.value, 2) && !witchTime)
         {
             dead = true; 
             GameManager.instance.OnGameOver.Invoke();
@@ -280,7 +279,9 @@ public class Player : MonoBehaviour
             witchTime = true && allowWitchTime;
             witchTimer = 4.0f;
             if (witchCanvas != null)
+            {
                 witchCanvas.gameObject.SetActive(true);
+            }
         }
 
         if (collision.gameObject.layer == (int)Mathf.Log(GameManager.instance.spikeLayer.value, 2))
@@ -306,14 +307,18 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        if(isSliding && !witchTime && !dead)
+        if (other.gameObject.tag == "Witch")
         {
-            //witchTime = true && allowWitchTime;
-            //witchTimer = 4.0f;
-            //if(witchCanvas != null)
-                //witchCanvas.gameObject.SetActive(true); 
+            if(isSliding && !witchTime && !dead)
+            {
+              witchTime = true && allowWitchTime;
+              witchTimer = 4.0f;
+              if (witchCanvas != null)
+                witchCanvas.gameObject.SetActive(true);
+            }
+
         }
     }
 
