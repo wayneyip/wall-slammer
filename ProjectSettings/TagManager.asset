@@ -10,7 +10,6 @@ TagManager:
   - Enemy
   - Target
   - Music
-  - Witch
   layers:
   - Default
   - TransparentFX
