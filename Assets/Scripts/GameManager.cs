@@ -71,9 +71,9 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && hasReachedGoal)
         {
             int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
-            if (nextSceneIndex == 5)
+            if (nextSceneIndex > 4)
             {
-        Destroy(GameObject.FindGameObjectWithTag("Music"));
+                Destroy(GameObject.FindGameObjectWithTag("Music"));
             }
             SceneManager.LoadScene(nextSceneIndex);
         }
@@ -132,7 +132,7 @@ public class GameManager : MonoBehaviour
             {
                 failText.gameObject.SetActive(false);
                 failText2.gameObject.SetActive(false);
-                successText.text = "Your time: " + GetDisplayTime();
+                successText.text = "Your time:\n" + GetDisplayTime();
                 successText.gameObject.SetActive(true);
                 successText2.gameObject.SetActive(true);
             }
